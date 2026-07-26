@@ -1,0 +1,32 @@
+# Java / Maven / Spring Boot
+Backend/target/
+Backend/.mvn/wrapper/maven-wrapper.jar
+Backend/HELP.md
+*.class
+*.jar
+*.war
+
+# Node / Vite / React
+Frontend/node_modules/
+Frontend/dist/
+Frontend/dist-ssr/
+Frontend/*.local
+Frontend/node_modules
+
+# IDEs & Editor Files
+.idea/
+Backend/.idea/
+Frontend/.idea/
+.vscode/
+Backend/.vscode/
+Frontend/.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS Files & Logs
+.DS_Store
+*.DS_Store
+Backend/.DS_Store
+Frontend/.DS_Store
+*.log
