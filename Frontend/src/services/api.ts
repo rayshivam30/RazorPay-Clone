@@ -16,7 +16,9 @@ import type {
   LoginResponse,
 } from '../types';
 
-const API_BASE_URL = 'http://localhost:8080/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/v1`
+  : 'http://localhost:8080/v1';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
