@@ -69,7 +69,7 @@ class RefundServiceImplTest {
         });
 
         RefundResponse expectedResponse = new RefundResponse(UUID.randomUUID(), paymentId, merchantId,
-                Money.of(5000, "INR"), RefundStatus.PROCESSED, "REF_123", null, null, null, LocalDateTime.now(), LocalDateTime.now());
+                Money.of(5000, "INR"), RefundStatus.PROCESSED, "Customer request", "REF_123", null, null, null, LocalDateTime.now(), LocalDateTime.now());
         when(refundMapper.toResponse(any())).thenReturn(expectedResponse);
 
         RefundResponse response = refundService.createRefund(merchantId, request);

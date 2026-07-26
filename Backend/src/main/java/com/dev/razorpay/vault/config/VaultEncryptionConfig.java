@@ -24,7 +24,15 @@ public class VaultEncryptionConfig {
 
     @Bean
     public BytesEncryptor dekEncrypter() {
-        byte[] masterKeyBytes = Base64.getDecoder().decode(masterKey);
+        byte[] masterKeyBytes;
+        try {
+            masterKeyBytes = Base64.getDecoder().decode(masterKey);
+        } catch (IllegalArgumentException e) {
+            masterKeyBytes = masterKey.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        }
+        if (masterKeyBytes.length < 32) {
+            masterKeyBytes = java.util.Arrays.copyOf(masterKeyBytes, 32);
+        }
         SecretKeySpec masterDecKey = new SecretKeySpec(masterKeyBytes, "AES");
         return new AesBytesEncryptor(masterDecKey, KeyGenerators.secureRandom(12),
                 AesBytesEncryptor.CipherAlgorithm.GCM);

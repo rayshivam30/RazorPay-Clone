@@ -2,14 +2,14 @@ spring:
   application:
     name: razorpay
   datasource:
-    url: ${DB_URL:jdbc:postgresql}
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/razorpayDB}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 vault:
-  master-key: ${VAULT_MASTER_KEY}
+  master-key: ${VAULT_MASTER_KEY:MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=}
 
 payment:
   simulator:
@@ -40,7 +40,7 @@ payment:
         success-rate: 80
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY}
+  secret-key: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250655368566D5971}
 
 app:
   rate-limit:
@@ -48,5 +48,3 @@ app:
     use-case:
       api-key:
         requests-per-minute: 100
-
-

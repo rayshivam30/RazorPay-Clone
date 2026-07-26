@@ -1,37 +1,138 @@
-# 💳 Razorpay Clone - Enterprise Full-Stack Payment Gateway & Merchant Portal
+# 💳 Razorpay Clone - Production-Grade Payment Gateway & Merchant Portal
 
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-Cache%20%26%20Limiter-red.svg)](https://redis.io/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS%203.x-38bdf8.svg)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An enterprise-grade, highly resilient **Full-Stack Payment Gateway and Developer Portal** built to replicate Razorpay's core financial infrastructure. Built with **Spring Boot** on the backend and **React (Vite + Tailwind CSS)** on the frontend, featuring multi-rail payment processing, PCI-DSS style card tokenization, transactional outbox pattern, state machine enforcement, rate limiting, and an interactive chaos payment simulator.
+> **💡 Why this project?**
+> Built to understand how modern, production-grade payment gateways like Razorpay handle multi-rail payment routing, Redis-backed idempotency, partial refunds, settlement ledgers, PCI-inspired card tokenization, transactional outbox event publishing, and fault tolerance under network chaos.
 
 ---
 
-## 📸 Merchant Portal & Developer Dashboard
+## 📍 Table of Contents
+- [App Showcase & UI](#-app-showcase--merchant-portal-ui)
+- [Live Demo & Deployment](#-live-demo--deployment)
+- [Project Scale & Overview](#-project-scale--structure-overview)
+- [Technology Stack](#️-technology-stack-breakdown)
+- [Key Architecture Decisions](#-key-architecture-decisions)
+- [Engineering Challenges & Solutions](#-engineering-challenges--solutions)
+- [System Architecture & Diagrams](#️-system-architecture--diagrams)
+- [Repository Directory Structure](#-repository-directory-structure)
+- [Cloud Deployment & Environment Variables](#-cloud-deployment--environment-variables)
+- [Key Technical Learnings](#-key-technical-learnings)
+- [Testing Strategy](#-testing-strategy)
+- [Implementation Status & Roadmap](#-implementation-status--honest-roadmap)
+- [Quick Start & Local Execution](#-quick-start--local-execution)
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           MERCHANT DEVELOPER PORTAL                         │
-├─────────────────┬───────────────────────────────────────────────────────────┤
-│ 📊 Dashboard    │  Total Revenue    Success Rate   Active API Keys   DLQ    │
-│ 💳 Payments     │  ₹ 2,450,000      98.4%          4                0       │
-│ 🔑 API Keys     ├───────────────────────────────────────────────────────────┤
-│ 🔔 Webhooks     │  [Initiate Payment Simulator] [Generate API Key]          │
-│ ⚙️ Chaos Simulator│                                                           │
-└─────────────────┴───────────────────────────────────────────────────────────┘
-```
+---
+
+## 📸 App Showcase & Merchant Portal UI
+
+### 1. Merchant Dashboard Overview
+![Merchant Dashboard Overview](./docs/images/dashboard_overview.png)
+*Real-time merchant metrics showing Gross Volume (₹28,500), Successful Payment attempts, 62.5% bank approval rate, active session API Key (`rzp_test_...`), and settlement trend volume chart.*
+
+### 2. Interactive Payment Gateway Checkout Modal
+![Razorpay Gateway Checkout Simulator](./docs/images/checkout_simulator.png)
+*Checkout modal supporting Card (with saved vault tokenization), UPI VPA / QR payment rails, NetBanking bank selector, and instant test transaction execution.*
+
+### 3. Operations, Daily Settlements & Webhook Dispatch Logs
+![Operations & Webhook Logs](./docs/images/operations_settlements.png)
+*Operations dashboard featuring manual T+0 settlement execution button, Net Settled payout ledger, and live Webhook Event Dispatcher log (`order.created`, `payment.initiated`, `payment.captured`).*
+
+### 4. Refunds Manager & Audit History
+![Refunds Manager & Audit](./docs/images/refunds_manager.png)
+*Refund management dashboard showing Total Refund Volume (₹5,000), Direct Refund issuance, search filters, and refund audit trail.*
+
+### 5. PCI-Inspired Saved Cards Vault & Tokenization
+![Saved Cards Vault](./docs/images/saved_cards_vault.png)
+*PCI-inspired Card Vault enabling card tokenization (`tok_card_...`), masked PAN storage (`•••• •••• •••• 6789`), Luhn check validation, and 1-click checkout execution.*
+
+### 6. API Key Studio & Environment Management
+![API Key Management](./docs/images/api_key_management.png)
+*Self-serve developer portal for generating HTTP Basic Auth API key pairs (`rzp_test_...`), key rotation, environment filtering (TEST/LIVE), and revoking keys.*
+
+---
+
+## 🌐 Live Demo & Deployment
+
+| Resource | Deployment Status | Local Endpoint |
+| :--- | :--- | :--- |
+| **Frontend Portal** | 🚧 *Coming Soon* | `http://localhost:5173` |
+| **Backend REST API** | 🚧 *Coming Soon* | `http://localhost:8080` |
+| **OpenAPI / Swagger** | 🚧 *Coming Soon* | `http://localhost:8080/swagger-ui.html` |
+
+---
+
+## 📊 Project Scale & Structure Overview
+
+| Metric Category | Scope & Design |
+| :--- | :--- |
+| **Backend Endpoints** | 25+ REST Endpoints (`/orders`, `/payments`, `/refunds`, `/vault`, `/auth`, `/keys`) |
+| **Backend Architecture** | 45+ Domain Entities & DTOs \| 15+ Core Services \| 5 Modular Packages |
+| **Frontend UI** | 15+ Glassmorphic React Components \| Type-Safe Axios Client \| Tailwind CSS |
+| **Idempotency Strategy** | In-Memory / Redis Lock checking `X-Idempotency-Key` headers |
+| **Rate Limiting** | Fixed Window, Sliding Window, and Token Bucket limiters backed by Redis |
+| **Data Protection** | AES-256-GCM Encryption for tokenized card storage |
+
+---
+
+## 🛠️ Technology Stack Breakdown
+
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Backend Core** | Java 21 / Spring Boot 3.x | Core REST API, Dependency Injection, JPA Auditing |
+| **Database** | PostgreSQL 15 | Persistent storage for Orders, Payments, Refunds, and Audit Logs |
+| **Cache & Limits** | Redis | Rate Limiting, Idempotency Key Store, API Key Caching |
+| **Security** | Spring Security 6 + JWT + AES-256 | Role-Based Access Control, API Secret Hashing, Card Tokenization |
+| **Frontend UI** | React 18 + TypeScript + Vite | Developer Dashboard, Payment Simulator, Glassmorphic UI |
+| **Styling** | Tailwind CSS 3.x | Modern responsive layout, dark-mode glassmorphism |
+| **Build & Deploy** | Maven / Docker Compose | Containerized local stack for DB & Redis |
+
+---
+
+## 🧠 Key Architecture Decisions
+
+- **Modular Monolith over Microservices**: Selected a modular monolith structure to minimize operational deployment overhead while preserving clean module boundaries (`common`, `merchant`, `payment`, `operations`, `vault`).
+- **Redis over In-Memory Cache**: Used Redis for rate limiting and idempotency locks to enable stateless, horizontally scalable API instances.
+- **Outbox Pattern over Synchronous Webhooks**: Decouples payment transaction commits from external network I/O, preventing merchant endpoint failures from blocking payment execution.
+- **UUIDs over Sequential IDs**: Prevents enumeration attacks and eliminates ID collision risks across distributed database environments.
+- **Deterministic State Machine over Enum Updates**: Enforces strict, legal state transitions with mandatory audit logging, preventing invalid status jumps and double-capture bugs.
+
+---
+
+## 💡 Engineering Challenges & Solutions
+
+### 1. Preventing Duplicate Payments via Redis Idempotency
+- **Problem**: Network retries or rapid double-clicks can cause duplicate payment processing on the backend.
+- **Solution**: Implemented `RedisIdempotencyStore` and `IdempotencyFilter`. Incoming requests carrying `X-Idempotency-Key` lock the transaction context in Redis, returning cached responses for duplicate calls and raising `IdempotencyConflictException` for concurrent executions.
+
+### 2. Reliable Webhook Delivery via Transactional Outbox Pattern
+- **Problem**: Dispatching HTTP webhooks directly inside database transactions causes slow response times and risks lost events if the DB commits but network calls fail.
+- **Solution**: Implemented the **Transactional Outbox Pattern** (`OutboxEvent` and `OutboxPublisherService`). Payment state changes write outbox events in the same DB transaction. An asynchronous worker polls the outbox, signs payloads with HMAC-SHA256, and dispatches webhooks with exponential backoff.
+
+### 3. Preventing Double-Captures with Payment State Machine
+- **Problem**: Invalid status transitions (e.g. attempting to capture an already refunded or failed payment) break ledger accounting.
+- **Solution**: Designed a deterministic `PaymentStateMachine` enforcing valid transitions (`CREATED` ➔ `INITIATED` ➔ `PROCESSING` ➔ `CAPTURED` / `FAILED` / `REFUNDED` / `SETTLED`). Illegal jumps trigger `InvalidStateTransitionException` and write audit trails to `PaymentTransitionLog`.
+
+### 4. PCI-Inspired Secure Card Vault Tokenization
+- **Problem**: Storing raw credit card numbers in primary databases violates security standards.
+- **Solution**: Built `VaultServiceImpl` using AES-256-GCM encryption. Raw card numbers are tokenized (`tok_card_...`), masked (`4111****1111`), and stored securely in `VaultCard`, ensuring application databases only deal with non-sensitive tokens.
+
+### 5. Resilient Event Handling & Dead Letter Queue (DLQ)
+- **Problem**: Merchant endpoints may be down or timing out, causing infinite retry loops.
+- **Solution**: Configured an exponential backoff retry mechanism. Webhooks exceeding max retries are automatically routed to `DlqEvent` for manual inspection and replay via the Developer Portal.
 
 ---
 
 ## 🏗️ System Architecture & Diagrams
 
 ### 1. Component Architecture
-
 ```mermaid
 graph TD
     Client[React Frontend / Merchant App] -->|HTTPS / REST| Gateway[Spring Security & API Gateway]
@@ -57,7 +158,6 @@ graph TD
 ```
 
 ### 2. Payment Execution Sequence Diagram
-
 ```mermaid
 sequenceDiagram
     autonumber
@@ -83,111 +183,111 @@ sequenceDiagram
     WH->>Customer: Dispatch Signed HMAC Webhook Event
 ```
 
-### 3. Database Entity-Relationship (ER) Diagram
+---
 
-```mermaid
-erDiagram
-    MERCHANT ||--o{ API_KEY : possesses
-    MERCHANT ||--o{ ORDER_RECORD : creates
-    ORDER_RECORD ||--o{ PAYMENT : contains
-    PAYMENT ||--o{ REFUND : generates
-    PAYMENT ||--o{ PAYMENT_TRANSITION_LOG : audits
-    PAYMENT ||--o{ SETTLEMENT_PAYMENT : links
-    SETTLEMENT ||--o{ SETTLEMENT_PAYMENT : groups
-    PAYMENT ||--o{ WEBHOOK_EVENT : triggers
-    WEBHOOK_EVENT ||--o{ DLQ_EVENT : fails_over_to
+## 📁 Repository Directory Structure
 
-    MERCHANT {
-        uuid id PK
-        string business_name
-        string email
-        string status
-    }
-    PAYMENT {
-        uuid id PK
-        uuid order_id FK
-        uuid merchant_id FK
-        decimal amount
-        string status
-        string method
-        string idempotency_key
-    }
-    REFUND {
-        uuid id PK
-        uuid payment_id FK
-        decimal amount
-        string status
-        string reason
-    }
-    SETTLEMENT {
-        uuid id PK
-        uuid merchant_id FK
-        decimal total_amount
-        string status
-    }
+```text
+razorpay-clone/
+├── Backend/                               # Spring Boot REST API
+│   ├── src/main/java/com/dev/razorpay/
+│   │   ├── common/                        # Audit, Redis Cache, Rate Limiting, Idempotency
+│   │   ├── merchant/                      # Auth, JWT, API Key Management, Merchant Entity
+│   │   ├── payment/                       # Strategy Rails, State Machine, Adapters, Simulator
+│   │   ├── operations/                    # Webhooks, Settlements, DLQ Event Management
+│   │   └── vault/                         # Card Vault, AES-256 Encryption, Tokenization
+│   ├── src/main/resources/
+│   │   └── application.yaml               # Environment Configuration
+│   ├── docker-compose.yml                 # PostgreSQL & Redis Stack
+│   └── pom.xml                            # Dependencies
+│
+├── Frontend/                              # React 18 + Vite + Tailwind App
+│   ├── src/
+│   │   ├── components/                    # Checkout Modal, Refund Modal, Header, Sidebar
+│   │   ├── pages/                         # Dashboard, Payments, API Keys, Webhooks, Operations
+│   │   ├── services/                      # Axios API client & Vault Store
+│   │   └── types/                         # DTO interfaces
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── docs/images/                           # UI Screenshot Assets
+└── README.md                              # Main Monorepo Documentation
 ```
 
 ---
 
-## ✅ Comprehensive Feature Checklist & Architecture Verification
+## ☁️ Cloud Deployment & Environment Variables
 
-### 🛡️ Backend Architecture & Core Engine
-- [x] **Modular Monolith Architecture**: Strict module boundaries (`common`, `merchant`, `payment`, `operations`, `vault`).
-- [x] **Domain-Driven Design (DDD)**: Package structure divided by aggregates, entities, value objects, services, and repositories.
-- [x] **Strategy Pattern for Payment Rails**: Pluggable strategies (`CardPaymentProcessor`, `UpiPaymentProcessor`, `NetBankingPaymentProcessor`).
-- [x] **Factory & Gateway Router**: Router components (`PaymentProcessorRouter`, `PaymentGatewayRouter`) dynamically delegating payment requests.
-- [x] **Deterministic Payment State Machine**: Enforced payment lifecycle (`CREATED` ➔ `INITIATED` ➔ `PROCESSING` ➔ `CAPTURED` / `FAILED` / `REFUNDED` / `SETTLED`).
-- [x] **Transaction Transition Audit Logs**: `PaymentTransitionLog` recording every status change, actor, and timestamp.
-- [x] **Partial & Multiple Refunds Engine**: `RefundServiceImpl` supporting multiple refunds on a payment while validating cumulative refund limits.
-- [x] **Transactional Outbox Pattern**: `OutboxEvent` and `OutboxPublisherService` guaranteeing reliable event emission without distributed transaction bottlenecks.
-- [x] **Redis Caching & Rate Limiting**: Multi-strategy limiters (`FixedWindowRateLimiter`, `SlidingWindowRateLimiter`, `TokenBucketRateLimiter`, `RedisApiKeyCache`).
-- [x] **Idempotency Engine**: `RedisIdempotencyStore` and `IdempotencyFilter` preventing duplicate payment processing via `X-Idempotency-Key`.
-- [x] **Settlement Engine**: Settlement aggregation ledger (`Settlement`, `SettlementPayment`, `SettlementServiceImpl`) grouping captured payments for merchant payouts.
-- [x] **Resilient Webhook Engine & DLQ**: Event dispatching with exponential backoff retries and Dead Letter Queue (`DlqEvent`) fallback.
-- [x] **Chaos Engineering Bank Simulator**: `BankCallbackSimulator` supporting configurable latency and chaos modes (`NORMAL`, `HIGH_LATENCY`, `BANK_DOWN`).
-- [x] **Jakarta Request Validation**: Custom annotations (`@ExpiryYear`, `@Valid`) validating requests before hitting business logic.
-- [x] **Global Exception Handling**: `GlobalExceptionHandler` returning structured `ErrorResponse` DTOs with HTTP status mapping.
+### Recommended 100% Free Hosting Stack
 
-### 🔒 Security Hardening
-- [x] **PCI-DSS Style Card Vault**: AES-256 encryption (`VaultServiceImpl`, `VaultEncryptionConfig`) storing masked card tokens.
-- [x] **API Key Secret Hashing**: API secrets hashed with SHA-256 / BCrypt, using prefix lookup (`rzp_test_...`) and Redis caching.
-- [x] **JWT Merchant Portal Authentication**: `JwtUtil`, `JwtAuthenticationFilter`, and `MerchantUserDetailsService` securing dashboard endpoints.
-- [x] **Webhook SHA-256 HMAC Signatures**: Webhook payloads signed with secret keys to ensure receiver-side authenticity.
-- [x] **CORS & Security Filter Chain**: Fine-grained Spring Security policies (`WebSecurityConfig`).
-- [x] **Zero Hardcoded Secrets**: Spring `${DB_URL}`, `${JWT_SECRET_KEY}`, `${VAULT_MASTER_KEY}` driven via environment variables.
+| Component | Cloud Provider | Free Tier Specification |
+| :--- | :--- | :--- |
+| **PostgreSQL Database** | [Neon.tech](https://neon.tech) | 0.5 GB Free Serverless Postgres |
+| **Redis Cache** | [Upstash.com](https://upstash.com) | Free Serverless Redis |
+| **Spring Boot Backend** | [Render.com](https://render.com) | Free Web Service (Docker / Maven) |
+| **React Frontend** | [Vercel.com](https://vercel.com) | Free Static Hosting |
 
-### 💾 Database Design & Optimization
-- [x] **Universal UUID Primary Keys**: All domain entities initialized with `UUID` (`GenerationType.UUID`).
-- [x] **B-Tree Database Indexing**: Explicit database indexes on `(order_id)`, `(merchant_id)`, `(status)`, and `(idempotency_key)`.
-- [x] **PostgreSQL JSONB Native Columns**: `@JdbcTypeCode(SqlTypes.JSON)` storing flexible payment method details and refund metadata.
-- [x] **Embedded Money Value Objects**: `@Embedded Money` enforcing financial currency and subunit precision (paise/INR).
+### Backend Environment Variables (`Render.com`)
 
-### 🎨 Frontend & Merchant Developer Portal
-- [x] **Glassmorphic Developer Dashboard**: Real-time visualization of revenue, success rates, active API keys, and DLQ health (React 18 + Vite + Tailwind).
-- [x] **Interactive Checkout Simulator**: Visual checkout modal supporting Card, UPI ID, and NetBanking bank selection.
-- [x] **Self-Serve API Key Studio**: Generate, inspect, and revoke API keys with live copy functionality.
-- [x] **Webhook & DLQ Inspector**: Monitor webhook logs, HTTP status codes, payload headers, and manual retry options.
-- [x] **Settlement & Operations Ledger**: Inspect merchant payouts, status, and linked payment IDs.
+| Variable Key | Description | Example / Production Value |
+| :--- | :--- | :--- |
+| `DB_URL` | PostgreSQL JDBC URL | `jdbc:postgresql://ep-xxx.neon.tech/neondb?sslmode=require` |
+| `DB_USER` | Database Username | `neondb_owner` |
+| `DB_PASS` | Database Password | `YourNeonPassword123` |
+| `REDIS_HOST` | Upstash Redis Hostname | `ep-xxx.upstash.io` |
+| `REDIS_PORT` | Redis Port | `6379` |
+| `REDIS_PASSWORD` | Upstash Redis Password | `YourUpstashPassword` |
+| `JWT_SECRET_KEY` | JWT Signing Key (Base64) | `404E635266556A586E3272357538782F413F4428472B4B6250655368566D5971` |
+| `VAULT_MASTER_KEY` | Card Vault Master Key (Base64) | `MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=` |
 
-### 🧪 Testing & Code Quality
-- [x] **Unit Testing Suite**: Service and State Machine tests (`RefundServiceImplTest`, `PaymentStateMachineTest`, `RazorpayApplicationTests`) built with JUnit 5 & Mockito.
+### Frontend Environment Variables (`Vercel.com`)
+
+| Variable Key | Description | Example / Production Value |
+| :--- | :--- | :--- |
+| `VITE_API_BASE_URL` | Live Backend API URL | `https://razorpay-backend.onrender.com` |
 
 ---
 
-## 🔌 API Endpoints Summary
+## 🚀 Key Technical Learnings
 
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/v1/auth/signup` | Register new merchant account | Public |
-| `POST` | `/api/v1/auth/login` | Merchant login & JWT retrieval | Public |
-| `POST` | `/api/v1/orders` | Create payment order | JWT / API Key |
-| `POST` | `/api/v1/payments/initiate` | Initiate payment execution | API Key |
-| `POST` | `/api/v1/refunds` | Process partial or full refund | JWT / API Key |
-| `POST` | `/api/v1/vault/tokenize` | Tokenize card for vault storage | API Key |
-| `GET` | `/api/v1/keys` | List active merchant API keys | JWT |
-| `POST` | `/api/v1/keys` | Generate new API secret key | JWT |
-| `GET` | `/api/v1/operations/webhooks` | View webhook delivery logs | JWT |
-| `GET` | `/api/v1/operations/settlements` | View merchant settlements | JWT |
+- **Building Idempotent Financial APIs**: Designing thread-safe idempotency stores using Redis key locking to handle network retries gracefully.
+- **Event-Driven Resilience**: Leveraging the Transactional Outbox pattern and Dead Letter Queues to guarantee event delivery without blocking client threads.
+- **Card Security & Tokenization**: Implementing AES-256-GCM encryption workflows to tokenize sensitive payload fields before persistence.
+- **Clean Architecture & Design Patterns**: Applying Strategy, Router, State Machine, and DDD patterns to maintain low coupling across payment modules.
+
+---
+
+## 🧪 Testing Strategy
+
+The backend includes isolated unit and integration test coverage:
+- **Unit Tests (`JUnit 5` + `Mockito`)**:
+  - `PaymentStateMachineTest`: Validates valid vs illegal state transitions (`CREATED` ➔ `CAPTURED`, rejecting `FAILED` ➔ `CAPTURED`).
+  - `RefundServiceImplTest`: Validates partial refund calculations and asserts `BusinessRuleViolationException` when refund amount exceeds captured payment.
+  - `RazorpayApplicationTests`: Verifies Spring Boot application context startup.
+
+---
+
+## 📌 Implementation Status & Honest Roadmap
+
+### ✅ Verified & Fully Implemented Features
+- [x] Multi-Rail Payment Gateway Router (Card, UPI, NetBanking Strategy Pattern)
+- [x] Payment State Machine with Audit Logs
+- [x] Redis-Backed Idempotency Engine (`X-Idempotency-Key`)
+- [x] Multi-Strategy Redis Rate Limiter (Fixed Window, Sliding Window, Token Bucket)
+- [x] PCI-Inspired AES-256 Card Vault & Tokenization
+- [x] Transactional Outbox Pattern & Webhook Dispatcher
+- [x] Dead Letter Queue (DLQ) Inspector & Manual Replay
+- [x] Merchant Auth (JWT + Secret API Key Hashing `rzp_test_...`)
+- [x] Partial & Multiple Refund Processing
+- [x] Settlement Aggregation Ledger
+- [x] Bank Chaos Simulator (Latency & Bank Down toggles)
+- [x] React Glassmorphic Developer Portal & Checkout Modal
+
+### 🚧 Future Roadmap (Planned Enhancements)
+- [ ] Flyway database migration scripts (`V1__init_schema.sql`)
+- [ ] Distributed Lock integration via Redisson / Redlock
+- [ ] Distributed Tracing with OpenTelemetry / Zipkin
+- [ ] Prometheus + Grafana metrics export via Spring Actuator
 
 ---
 
@@ -199,14 +299,14 @@ cd Backend
 docker-compose up -d
 ```
 
-### 2. Launch Spring Boot Backend
+### 2. Launch Backend API
 ```bash
 cd Backend
 ./mvnw spring-boot:run
 ```
 > Server runs on `http://localhost:8080`
 
-### 3. Launch React Frontend
+### 3. Launch Frontend Portal
 ```bash
 cd ../Frontend
 npm install
