@@ -8,6 +8,7 @@ import {
   Activity,
   ShieldCheck,
   LogOut,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -23,15 +24,19 @@ export type NavTab =
 interface SidebarProps {
   activeTab: NavTab;
   setActiveTab: (tab: NavTab) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onClose }) => {
   const { merchant, logout } = useAuth();
 
   return (
-    <aside className="w-64 bg-[#0c0c0e] border-r border-zinc-800/80 flex flex-col h-screen fixed left-0 top-0 z-30 select-none">
+    <>
+      {isOpen && <button aria-label="Close navigation" onClick={onClose} className="fixed inset-0 z-30 bg-black/70 md:hidden" />}
+      <aside className={`w-72 md:w-64 bg-[#0c0c0e] border-r border-zinc-800/80 flex flex-col h-dvh fixed left-0 top-0 z-40 select-none transition-transform duration-200 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       {/* Brand Header */}
-      <div className="p-6 border-b border-zinc-800/80 flex items-center gap-3">
+      <div className="p-5 md:p-6 border-b border-zinc-800/80 flex items-center gap-3">
         <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
           <span className="font-extrabold text-white text-xl tracking-tighter">R</span>
         </div>
@@ -42,6 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
           </div>
           <p className="text-xs text-zinc-400 font-medium">Merchant Dashboard</p>
         </div>
+        <button onClick={onClose} className="ml-auto p-2 text-zinc-400 hover:text-white md:hidden" aria-label="Close menu"><X className="w-5 h-5" /></button>
       </div>
 
       {/* Navigation List */}
@@ -62,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => { setActiveTab(item.id); onClose(); }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                   isActive
                     ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/60'
@@ -96,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => { setActiveTab(item.id); onClose(); }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                   isActive
                     ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/60'
@@ -129,6 +135,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
           </button>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };

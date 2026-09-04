@@ -98,11 +98,11 @@ export const RefundModal: React.FC<RefundModalProps> = ({
   return (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl p-6 shadow-2xl text-white relative my-auto max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl p-4 sm:p-6 shadow-2xl text-white relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
       >
         <button
           onClick={onClose}

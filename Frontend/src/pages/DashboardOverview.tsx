@@ -82,10 +82,10 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      <div className="bg-gradient-to-r from-zinc-900 via-[#121215] to-zinc-900 border border-zinc-800 rounded-2xl p-6 flex items-center justify-between shadow-xl">
+      <div className="bg-gradient-to-r from-zinc-900 via-[#121215] to-zinc-900 border border-zinc-800 rounded-2xl p-4 sm:p-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between shadow-xl">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-white tracking-tight">Razorpay Gateway Operations</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Razorpay Gateway Operations</h2>
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
               Operational
             </span>
@@ -95,17 +95,17 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex w-full sm:w-auto items-center gap-2 sm:gap-3">
           <button
             onClick={() => onNavigateTab('checkout')}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition-colors"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition-colors"
           >
             <CreditCard className="w-3.5 h-3.5" />
             <span>Launch Checkout</span>
           </button>
           <button
             onClick={fetchData}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 border border-zinc-700 transition-colors"
+            className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 border border-zinc-700 transition-colors"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -174,7 +174,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
       </div>
 
-      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-bold text-white text-base">Payment Volume Overview</h3>
@@ -207,7 +207,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
       </div>
 
-      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4">
+      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-white text-base">Recent Payments</h3>
           <button
@@ -220,7 +220,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
+          <table className="min-w-[640px] w-full text-left text-xs text-zinc-300">
             <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
               <tr>
                 <th className="py-3 px-4">Payment ID</th>

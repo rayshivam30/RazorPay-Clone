@@ -90,7 +90,7 @@ export const ApiKeys: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">API Key Management</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -98,7 +98,7 @@ export const ApiKeys: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap sm:gap-4">
           <label className="flex items-center gap-2 text-xs text-zinc-400 select-none cursor-pointer">
             <input
               type="checkbox"
@@ -120,7 +120,7 @@ export const ApiKeys: React.FC = () => {
 
           <button
             onClick={handleGenerateKey}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Generate New API Key</span>
@@ -130,7 +130,7 @@ export const ApiKeys: React.FC = () => {
 
       <div className="bg-[#121215] border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
+          <table className="min-w-[680px] w-full text-left text-xs text-zinc-300">
             <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
               <tr>
                 <th className="py-3.5 px-4">Key ID</th>
@@ -218,11 +218,11 @@ export const ApiKeys: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setKeyToRevoke(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-[#121215] border border-red-500/30 rounded-2xl p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-sm bg-[#121215] border border-red-500/30 rounded-2xl p-4 sm:p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setKeyToRevoke(null)}
@@ -266,11 +266,11 @@ export const ApiKeys: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setNewKeyData(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/85 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/85 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#121215] border border-blue-500/40 rounded-2xl p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-md bg-[#121215] border border-blue-500/40 rounded-2xl p-4 sm:p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">

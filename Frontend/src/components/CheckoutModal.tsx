@@ -183,13 +183,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       onClick={() => {
         if (step !== 'AUTHORIZING') onClose();
       }}
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col my-auto max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
       >
-        <div className="bg-[#0b1329] p-5 border-b border-zinc-800 flex items-center justify-between relative">
+        <div className="bg-[#0b1329] p-4 sm:p-5 pr-10 border-b border-zinc-800 flex items-center justify-between gap-3 relative">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-xl shadow-md">
               R
@@ -202,7 +202,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           <div className="text-right">
             <span className="text-[10px] text-zinc-400 block uppercase font-medium">Payable Amount</span>
-            <span className="text-lg font-extrabold text-white">₹{amountInRupees.toLocaleString('en-IN')}</span>
+            <span className="text-base sm:text-lg font-extrabold text-white">₹{amountInRupees.toLocaleString('en-IN')}</span>
           </div>
 
           <button
@@ -213,7 +213,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </button>
         </div>
 
-        <div className="p-6 flex-1 min-h-[340px] flex flex-col justify-between">
+        <div className="p-4 sm:p-6 flex-1 min-h-[340px] flex flex-col justify-between">
           {step === 'METHOD_SELECT' && (
             <>
               <div className="space-y-4">

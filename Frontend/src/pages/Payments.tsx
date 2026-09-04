@@ -101,7 +101,7 @@ export const Payments: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Payments Lifecycle</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -177,7 +177,7 @@ export const Payments: React.FC = () => {
       {/* Table */}
       <div className="bg-[#121215] border border-zinc-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
+          <table className="min-w-[760px] w-full text-left text-xs text-zinc-300">
             <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
               <tr>
                 <th className="py-3.5 px-4">Payment ID</th>
@@ -262,7 +262,7 @@ export const Payments: React.FC = () => {
 
         {/* Pagination Bar */}
         {filteredPayments.length > 0 && (
-          <div className="flex items-center justify-between p-4 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
             <span>
               Page <strong className="text-white">{page}</strong> of{' '}
               <strong className="text-white">{totalPages}</strong> ({filteredPayments.length} matching payments)
@@ -294,11 +294,11 @@ export const Payments: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setSelectedPayment(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-2xl bg-[#121215] border border-zinc-700 rounded-2xl p-4 sm:p-6 text-white relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setSelectedPayment(null)}

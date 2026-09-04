@@ -23,6 +23,7 @@ const MainAppContent: React.FC = () => {
   const { showToast } = useToast();
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
+  const [isNavigationOpen, setIsNavigationOpen] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -106,12 +107,12 @@ const MainAppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white flex">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isNavigationOpen} onClose={() => setIsNavigationOpen(false)} />
 
-      <div className="flex-1 ml-64 flex flex-col min-h-screen">
-        <Header title={getTitle()} />
+      <div className="flex-1 md:ml-64 flex min-w-0 flex-col min-h-screen">
+        <Header title={getTitle()} onOpenNavigation={() => setIsNavigationOpen(true)} />
 
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           {activeTab === 'overview' && (
             <DashboardOverview
               onOpenCheckout={handleOpenCheckout}
@@ -122,7 +123,7 @@ const MainAppContent: React.FC = () => {
           {activeTab === 'checkout' && (
             <div className="space-y-6 animate-fadeIn">
               {!apiKeyId || !apiKeySecret ? (
-                <div className="bg-[#121215] border border-amber-500/30 rounded-2xl p-8 shadow-xl text-center space-y-4 max-w-xl mx-auto my-12">
+                <div className="bg-[#121215] border border-amber-500/30 rounded-2xl p-5 sm:p-8 shadow-xl text-center space-y-4 max-w-xl mx-auto my-6 sm:my-12">
                   <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
                     <CreditCard className="w-8 h-8" />
                   </div>
@@ -141,7 +142,7 @@ const MainAppContent: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-8 shadow-xl text-center space-y-4 max-w-xl mx-auto my-12">
+                <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-5 sm:p-8 shadow-xl text-center space-y-4 max-w-xl mx-auto my-6 sm:my-12">
                   <div className="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto">
                     <CreditCard className="w-8 h-8" />
                   </div>

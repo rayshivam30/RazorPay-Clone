@@ -105,7 +105,7 @@ export const Operations: React.FC = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Operations & Settlements</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -113,7 +113,7 @@ export const Operations: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center gap-3 sm:w-auto">
           <button
             onClick={fetchData}
             className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
@@ -123,7 +123,7 @@ export const Operations: React.FC = () => {
           <button
             onClick={handleTriggerSettlements}
             disabled={triggering}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all disabled:opacity-50"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all disabled:opacity-50"
           >
             <Play className="w-4 h-4" />
             <span>{triggering ? 'Processing...' : 'Run Settlement Job'}</span>
@@ -141,7 +141,7 @@ export const Operations: React.FC = () => {
       {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Settlements Table */}
-        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export const Operations: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-zinc-300">
+              <table className="min-w-[580px] w-full text-left text-xs text-zinc-300">
                 <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
                   <tr>
                     <th className="py-3 px-3">Settlement ID</th>
@@ -232,7 +232,7 @@ export const Operations: React.FC = () => {
 
           {/* Settlements Pagination Controls */}
           {sortedSettlements.length > 0 && (
-            <div className="flex items-center justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
               <span>
                 Page <strong className="text-white">{settlementPage}</strong> of{' '}
                 <strong className="text-white">{totalSettlementPages}</strong> ({sortedSettlements.length} settlements)
@@ -258,7 +258,7 @@ export const Operations: React.FC = () => {
         </div>
 
         {/* Webhooks Table */}
-        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -289,7 +289,7 @@ export const Operations: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-zinc-300">
+              <table className="min-w-[580px] w-full text-left text-xs text-zinc-300">
                 <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
                   <tr>
                     <th className="py-3 px-3">Event Type</th>
@@ -343,7 +343,7 @@ export const Operations: React.FC = () => {
 
           {/* Webhooks Pagination Controls */}
           {filteredWebhooks.length > 0 && (
-            <div className="flex items-center justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
               <span>
                 Page <strong className="text-white">{webhookPage}</strong> of{' '}
                 <strong className="text-white">{totalWebhookPages}</strong>
@@ -374,11 +374,11 @@ export const Operations: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setSelectedSettlement(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-4 sm:p-6 text-white relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setSelectedSettlement(null)}
@@ -464,11 +464,11 @@ export const Operations: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setSelectedWebhook(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-4 sm:p-6 text-white relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setSelectedWebhook(null)}
@@ -482,7 +482,7 @@ export const Operations: React.FC = () => {
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 font-mono text-xs space-y-2">
               <div className="flex justify-between"><span className="text-zinc-500">Event ID:</span><span>{selectedWebhook.id}</span></div>
               <div className="flex justify-between"><span className="text-zinc-500">Status:</span><span className="text-emerald-400 font-bold">{selectedWebhook.status}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Target URL:</span><span className="truncate max-w-xs">{selectedWebhook.targetUrl}</span></div>
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between"><span className="text-zinc-500">Target URL:</span><span className="break-all sm:max-w-xs sm:truncate">{selectedWebhook.targetUrl}</span></div>
               
               <div className="pt-2 border-t border-zinc-800">
                 <span className="text-zinc-500 block mb-1">Payload JSON:</span>

@@ -83,13 +83,13 @@ export const Vault: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Saved Cards Vault</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">Saved Cards Vault</h2>
             <p className="text-xs text-zinc-400 mt-0.5">
               PCI-DSS Compliant Card Tokenization engine for instant 1-click customer checkouts.
             </p>
@@ -98,7 +98,7 @@ export const Vault: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4">
+        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
           <h3 className="font-bold text-white text-base">Tokenize Customer Card</h3>
 
           {error && (
@@ -120,7 +120,7 @@ export const Vault: React.FC = () => {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="text-xs text-zinc-400 block mb-1">Exp Month</label>
                 <input
@@ -183,7 +183,7 @@ export const Vault: React.FC = () => {
           </form>
         </div>
 
-        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4">
+        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-white text-base">Tokenized Vault Cards</h3>
             <span className="text-xs text-zinc-500 font-mono">{tokens.length} Saved</span>
@@ -200,10 +200,10 @@ export const Vault: React.FC = () => {
                   key={token.token || idx}
                   className="bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-800 rounded-xl p-4 space-y-2 relative group"
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-wrap justify-between items-center gap-2">
                     <span className="text-xs font-bold text-blue-400 uppercase">{token.brand || 'VISA'}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-zinc-500 font-mono">Token: {token.token}</span>
+                      <span className="max-w-44 truncate text-[10px] text-zinc-500 font-mono">Token: {token.token}</span>
                       <button
                         onClick={() => handleDeleteCard(token.token)}
                         className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all"
@@ -218,7 +218,7 @@ export const Vault: React.FC = () => {
                     •••• •••• •••• {token.lastFour || '6789'}
                   </div>
 
-                  <div className="flex justify-between text-xs text-zinc-400 pt-1">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between text-xs text-zinc-400 pt-1">
                     <span>{token.cardHolderName || 'Valued Customer'}</span>
                     <span>Expires {token.expiryMonth}/{token.expiryYear}</span>
                   </div>

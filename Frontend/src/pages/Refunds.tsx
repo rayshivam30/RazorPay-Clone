@@ -118,7 +118,7 @@ export const Refunds: React.FC = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-6 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Refunds Management & Audit</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -126,7 +126,7 @@ export const Refunds: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center gap-3 sm:w-auto">
           <button
             onClick={fetchRefunds}
             className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
@@ -135,7 +135,7 @@ export const Refunds: React.FC = () => {
           </button>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Issue Direct Refund</span>
@@ -222,7 +222,7 @@ export const Refunds: React.FC = () => {
       {/* Refunds Table */}
       <div className="bg-[#121215] border border-zinc-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
+          <table className="min-w-[760px] w-full text-left text-xs text-zinc-300">
             <thead className="bg-zinc-900/80 text-zinc-400 font-semibold uppercase tracking-wider border-b border-zinc-800">
               <tr>
                 <th className="py-3.5 px-4">Refund ID</th>
@@ -287,7 +287,7 @@ export const Refunds: React.FC = () => {
 
         {/* Pagination Bar */}
         {filteredRefunds.length > 0 && (
-          <div className="flex items-center justify-between p-4 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border-t border-zinc-800 text-xs text-zinc-400 font-sans">
             <span>
               Page <strong className="text-white">{page}</strong> of{' '}
               <strong className="text-white">{totalPages}</strong> ({filteredRefunds.length} total refunds)
@@ -319,11 +319,11 @@ export const Refunds: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setSelectedRefund(null)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative space-y-4 my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-4 sm:p-6 text-white relative space-y-4 my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setSelectedRefund(null)}
@@ -354,11 +354,11 @@ export const Refunds: React.FC = () => {
         <ModalPortal>
         <div 
           onClick={() => setIsModalOpen(false)}
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-md bg-[#121215] border border-zinc-700 rounded-2xl p-4 sm:p-6 text-white relative my-auto max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
           >
             <button
               onClick={() => setIsModalOpen(false)}
