@@ -45,6 +45,17 @@ export const RefundModal: React.FC<RefundModalProps> = ({
     }
   }, [isOpen, payment]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !payment) return null;
 
   const originalAmount = payment.amount.amountUnits;
@@ -85,8 +96,14 @@ export const RefundModal: React.FC<RefundModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl p-6 shadow-2xl text-white relative">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl p-6 shadow-2xl text-white relative my-auto max-h-[85vh] overflow-y-auto"
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"

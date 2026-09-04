@@ -3,11 +3,14 @@ import { RotateCcw, RefreshCw, Search, Eye, Plus, DollarSign, X, CheckCircle2, F
 import { refundsApi, getApiErrorMessage } from '../services/api';
 import type { Refund } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { getStatusBadgeClass } from '../utils/statusBadge';
+import { useToast } from '../components/Toast';
 
 const ITEMS_PER_PAGE = 8;
 
 export const Refunds: React.FC = () => {
   const { apiKeyId, apiKeySecret } = useAuth();
+  const { showToast } = useToast();
   const [refunds, setRefunds] = useState<Refund[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -39,6 +42,17 @@ export const Refunds: React.FC = () => {
     fetchRefunds();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedRefund(null);
+        setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleManualRefund = async (e: React.FormEvent) => {
     e.preventDefault();
     setProcessing(true);
@@ -68,6 +82,7 @@ export const Refunds: React.FC = () => {
       });
 
       setRefunds((prev) => [newRefund, ...prev]);
+      showToast(`Refund of ₹${val.toLocaleString('en-IN')} processed successfully!`, 'success');
       setIsModalOpen(false);
       setInputPaymentId('');
       setRefundAmount('');
@@ -245,8 +260,8 @@ export const Refunds: React.FC = () => {
                       ₹{refund.amount?.amountUnits?.toLocaleString()}
                     </td>
                     <td className="py-3.5 px-4 font-sans text-zinc-300">{refund.reason || 'N/A'}</td>
-                    <td className="py-3.5 px-4 font-sans">
-                      <span className="badge-refunded px-2.5 py-1 rounded-md text-[10px] font-bold">
+                    <td className="py-3.5 px-4 font-sans font-sans">
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${getStatusBadgeClass(refund.status || 'PROCESSED')}`}>
                         {refund.status || 'PROCESSED'}
                       </span>
                     </td>
@@ -300,8 +315,14 @@ export const Refunds: React.FC = () => {
 
       {/* Refund Details Modal Drawer */}
       {selectedRefund && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative space-y-4">
+        <div 
+          onClick={() => setSelectedRefund(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative space-y-4 my-auto max-h-[85vh] overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedRefund(null)}
               className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg"
@@ -324,8 +345,14 @@ export const Refunds: React.FC = () => {
 
       {/* Issue Direct Refund Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-md bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative">
+        <div 
+          onClick={() => setIsModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+          >
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg"

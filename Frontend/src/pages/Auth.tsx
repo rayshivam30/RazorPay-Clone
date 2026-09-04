@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import type { BusinessType } from '../types';
-import { ShieldCheck, Lock, Mail, Building, User, ArrowRight, Loader2 } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, Building, User, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 
-export const AuthPage: React.FC = () => {
+interface AuthPageProps {
+  onBackToLanding?: () => void;
+}
+
+export const AuthPage: React.FC<AuthPageProps> = ({ onBackToLanding }) => {
   const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -53,21 +57,28 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center p-6 relative overflow-hidden select-none">
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center p-6 relative select-none">
+      {onBackToLanding && (
+        <button
+          onClick={onBackToLanding}
+          className="absolute top-6 left-6 z-20 px-3.5 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-xs font-semibold text-zinc-400 hover:text-white transition-all flex items-center gap-1.5"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Landing Page</span>
+        </button>
+      )}
 
       <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 shadow-xl shadow-blue-600/30 mb-3">
-            <span className="font-extrabold text-white text-3xl">R</span>
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 shadow-lg shadow-blue-600/30 mb-3">
+            <span className="font-extrabold text-white text-2xl">R</span>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">Razorpay Gateway</h1>
-          <p className="text-xs text-zinc-400 mt-1">Merchant Portal & Payment Operations</p>
+          <h1 className="text-xl font-bold tracking-tight text-white">Razorpay Merchant Access</h1>
+          <p className="text-xs text-zinc-400 mt-1">Enterprise Payment Gateway Portal</p>
         </div>
 
-        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
-          <div className="grid grid-cols-2 gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-xl mb-6 text-xs font-semibold">
+        <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div className="grid grid-cols-2 gap-1 p-1 bg-[#0c0c0e] border border-zinc-800 rounded-xl mb-6 text-xs font-semibold">
             <button
               onClick={() => {
                 setIsLogin(true);
@@ -104,13 +115,13 @@ export const AuthPage: React.FC = () => {
                 <div>
                   <label className="text-xs font-medium text-zinc-400 block mb-1">Full Name</label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                    <User className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Jane Merchant"
-                      className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full bg-[#0c0c0e] border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none transition-colors"
                       required
                     />
                   </div>
@@ -119,13 +130,13 @@ export const AuthPage: React.FC = () => {
                 <div>
                   <label className="text-xs font-medium text-zinc-400 block mb-1">Business Name</label>
                   <div className="relative">
-                    <Building className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                    <Building className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
                     <input
                       type="text"
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="Acme Tech Store"
-                      className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full bg-[#0c0c0e] border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none transition-colors"
                       required
                     />
                   </div>
@@ -136,7 +147,7 @@ export const AuthPage: React.FC = () => {
                   <select
                     value={businessType}
                     onChange={(e) => setBusinessType(e.target.value as BusinessType)}
-                    className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-[#0c0c0e] border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none transition-colors"
                   >
                     <option value="INDIVIDUAL">Individual</option>
                     <option value="PROPRIETORSHIP">Proprietorship</option>
@@ -151,13 +162,13 @@ export const AuthPage: React.FC = () => {
             <div>
               <label className="text-xs font-medium text-zinc-400 block mb-1">Email Address</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="merchant@razorpay.com"
-                  className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0c0c0e] border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none transition-colors"
                   required
                 />
               </div>
@@ -166,13 +177,13 @@ export const AuthPage: React.FC = () => {
             <div>
               <label className="text-xs font-medium text-zinc-400 block mb-1">Password</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0c0c0e] border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none transition-colors"
                   required
                 />
               </div>
@@ -181,25 +192,27 @@ export const AuthPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-6 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              className="w-full mt-4 py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-md shadow-blue-600/30 flex items-center justify-center gap-2 transition-all"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
                   <span>{isLogin ? 'Sign In to Dashboard' : 'Create Merchant Account'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </>
               )}
             </button>
           </form>
         </div>
 
-        <div className="text-center mt-6 text-[11px] text-zinc-500 flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+        <div className="text-center mt-5 text-[11px] text-zinc-500 flex items-center justify-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span>Encrypted JWT Merchant Session & PCI-DSS Compliant Gateway</span>
         </div>
       </div>
     </div>
   );
 };
+
+export default AuthPage;

@@ -93,10 +93,12 @@ api.interceptors.response.use(
       const data = error.response.data;
       if (data.fieldErrors && Array.isArray(data.fieldErrors) && data.fieldErrors.length > 0) {
         const details = data.fieldErrors.map((f: any) => `${f.field}: ${f.message}`).join(' | ');
-        error.userFriendlyMessage = `${data.message || 'Validation failed'}: ${details}`;
+        error.userFriendlyMessage = `Validation Error (${data.message || 'Invalid parameters'}): ${details}`;
       } else if (data.message) {
         error.userFriendlyMessage = data.message;
       }
+    } else if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
+      error.userFriendlyMessage = 'Unable to connect to Razorpay Backend API (http://localhost:8080). Please ensure Spring Boot backend is running.';
     }
     return Promise.reject(error);
   }
@@ -104,12 +106,24 @@ api.interceptors.response.use(
 
 export const getApiErrorMessage = (err: any): string => {
   if (err?.userFriendlyMessage) return err.userFriendlyMessage;
+  if (err?.code === 'ERR_NETWORK' || err?.message?.includes('Network Error')) {
+    return 'Unable to connect to Razorpay Backend API (http://localhost:8080). Please ensure Spring Boot backend is running.';
+  }
   if (err?.response?.data?.fieldErrors?.length) {
     return err.response.data.fieldErrors.map((f: any) => `${f.field}: ${f.message}`).join(' | ');
   }
   if (err?.response?.data?.message) return err.response.data.message;
+  
+  const status = err?.response?.status;
+  if (status === 401) return 'Session expired or unauthenticated. Please sign in again.';
+  if (status === 403) return 'Access denied. Active API Key required for this operation.';
+  if (status === 404) return 'Requested record or endpoint was not found on the payment gateway.';
+  if (status === 409) return 'Conflict error: Transaction or resource reference already exists.';
+  if (status === 500) return 'Bank gateway server error. Please try again or check backend logs.';
+  if (status === 503) return 'Payment authorization engine temporarily unavailable.';
+  
   if (err?.message) return err.message;
-  return 'An unexpected request error occurred';
+  return 'An unexpected payment gateway error occurred. Please try again.';
 };
 
 export const authApi = {

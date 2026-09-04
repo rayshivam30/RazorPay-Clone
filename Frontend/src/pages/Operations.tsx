@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Activity, Play, RefreshCw, Layers, CheckCircle2, Eye, X, ChevronLeft, ChevronRight, Filter, ArrowUpDown } from 'lucide-react';
 import { operationsApi } from '../services/api';
 import type { WebhookEvent, Settlement } from '../types';
+import { useToast } from '../components/Toast';
 
 const ITEMS_PER_PAGE = 5;
 
 export const Operations: React.FC = () => {
+  const { showToast } = useToast();
   const [webhooks, setWebhooks] = useState<WebhookEvent[]>([]);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,15 +44,28 @@ export const Operations: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedSettlement(null);
+        setSelectedWebhook(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleTriggerSettlements = async () => {
     setTriggering(true);
     setMessage(null);
     try {
       const res = await operationsApi.triggerSettlement();
-      setMessage(res || 'Daily settlements processing triggered successfully!');
+      const msg = res || 'Daily settlements processing triggered successfully!';
+      setMessage(msg);
+      showToast(msg, 'success');
       fetchData();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Trigger failed');
+      showToast(err.response?.data?.message || 'Trigger failed', 'error');
     } finally {
       setTriggering(false);
     }
@@ -355,8 +370,14 @@ export const Operations: React.FC = () => {
 
       {/* Settlement Details Modal */}
       {selectedSettlement && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative">
+        <div 
+          onClick={() => setSelectedSettlement(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedSettlement(null)}
               className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg"
@@ -437,8 +458,14 @@ export const Operations: React.FC = () => {
 
       {/* Webhook Details Modal */}
       {selectedWebhook && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative">
+        <div 
+          onClick={() => setSelectedWebhook(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedWebhook(null)}
               className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg"

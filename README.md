@@ -16,7 +16,6 @@
 
 ## 📍 Table of Contents
 - [App Showcase & UI](#-app-showcase--merchant-portal-ui)
-- [Live Demo & Deployment](#-live-demo--deployment)
 - [Project Scale & Overview](#-project-scale--structure-overview)
 - [Technology Stack](#️-technology-stack-breakdown)
 - [Key Architecture Decisions](#-key-architecture-decisions)
@@ -26,7 +25,6 @@
 - [Cloud Deployment & Environment Variables](#-cloud-deployment--environment-variables)
 - [Key Technical Learnings](#-key-technical-learnings)
 - [Testing Strategy](#-testing-strategy)
-- [Implementation Status & Roadmap](#-implementation-status--honest-roadmap)
 - [Quick Start & Local Execution](#-quick-start--local-execution)
 
 ---
@@ -56,16 +54,6 @@
 ### 6. API Key Studio & Environment Management
 ![API Key Management](./docs/images/api_key_management.png)
 *Self-serve developer portal for generating HTTP Basic Auth API key pairs (`rzp_test_...`), key rotation, environment filtering (TEST/LIVE), and revoking keys.*
-
----
-
-## 🌐 Live Demo & Deployment
-
-| Resource | Deployment Status | Local Endpoint |
-| :--- | :--- | :--- |
-| **Frontend Portal** | 🚧 *Coming Soon* | `http://localhost:5173` |
-| **Backend REST API** | 🚧 *Coming Soon* | `http://localhost:8080` |
-| **OpenAPI / Swagger** | 🚧 *Coming Soon* | `http://localhost:8080/swagger-ui.html` |
 
 ---
 
@@ -264,31 +252,7 @@ The backend includes isolated unit and integration test coverage:
   - `PaymentStateMachineTest`: Validates valid vs illegal state transitions (`CREATED` ➔ `CAPTURED`, rejecting `FAILED` ➔ `CAPTURED`).
   - `RefundServiceImplTest`: Validates partial refund calculations and asserts `BusinessRuleViolationException` when refund amount exceeds captured payment.
   - `RazorpayApplicationTests`: Verifies Spring Boot application context startup.
-
----
-
-## 📌 Implementation Status & Honest Roadmap
-
-### ✅ Verified & Fully Implemented Features
-- [x] Multi-Rail Payment Gateway Router (Card, UPI, NetBanking Strategy Pattern)
-- [x] Payment State Machine with Audit Logs
-- [x] Redis-Backed Idempotency Engine (`X-Idempotency-Key`)
-- [x] Multi-Strategy Redis Rate Limiter (Fixed Window, Sliding Window, Token Bucket)
-- [x] PCI-Inspired AES-256 Card Vault & Tokenization
-- [x] Transactional Outbox Pattern & Webhook Dispatcher
-- [x] Dead Letter Queue (DLQ) Inspector & Manual Replay
-- [x] Merchant Auth (JWT + Secret API Key Hashing `rzp_test_...`)
-- [x] Partial & Multiple Refund Processing
-- [x] Settlement Aggregation Ledger
-- [x] Bank Chaos Simulator (Latency & Bank Down toggles)
-- [x] React Glassmorphic Developer Portal & Checkout Modal
-
-### 🚧 Future Roadmap (Planned Enhancements)
-- [ ] Flyway database migration scripts (`V1__init_schema.sql`)
-- [ ] Distributed Lock integration via Redisson / Redlock
-- [ ] Distributed Tracing with OpenTelemetry / Zipkin
-- [ ] Prometheus + Grafana metrics export via Spring Actuator
-
+  
 ---
 
 ## ⚡ Quick Start & Local Execution

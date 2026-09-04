@@ -4,11 +4,14 @@ import { paymentsApi, refundsApi } from '../services/api';
 import type { Payment, Refund } from '../types';
 import { RefundModal } from '../components/RefundModal';
 import { useAuth } from '../context/AuthContext';
+import { getStatusBadgeClass } from '../utils/statusBadge';
+import { useToast } from '../components/Toast';
 
 const ITEMS_PER_PAGE = 8;
 
 export const Payments: React.FC = () => {
   const { apiKeyId, apiKeySecret } = useAuth();
+  const { showToast } = useToast();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -42,12 +45,23 @@ export const Payments: React.FC = () => {
     fetchPayments();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedPayment) {
+        setSelectedPayment(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPayment]);
+
   const handleCapture = async (paymentId: string) => {
     try {
       await paymentsApi.capture(paymentId);
+      showToast(`Payment ${paymentId.slice(0, 14)} captured successfully`, 'success');
       fetchPayments();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to capture payment');
+      showToast(err.response?.data?.message || 'Failed to capture payment', 'error');
     }
   };
 
@@ -129,6 +143,8 @@ export const Payments: React.FC = () => {
             className="w-full bg-[#121215] border border-zinc-800 rounded-xl px-4 py-3 text-xs text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer"
           >
             <option value="ALL">All Payment Statuses</option>
+            <option value="CREATED">CREATED</option>
+            <option value="INITIATED">INITIATED</option>
             <option value="CAPTURED">CAPTURED</option>
             <option value="SETTLED">SETTLED</option>
             <option value="AUTHORIZING">AUTHORIZING</option>
@@ -201,19 +217,7 @@ export const Payments: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4 font-sans">
                       <span
-                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${
-                          payment.status === 'SETTLED'
-                            ? 'badge-settled'
-                            : payment.status === 'CAPTURED'
-                            ? 'badge-captured'
-                            : payment.status === 'AUTHORIZING'
-                            ? 'badge-authorizing'
-                            : payment.status === 'REFUNDED'
-                            ? 'badge-refunded'
-                            : payment.status === 'PARTIALLY_REFUNDED'
-                            ? 'badge-partially-refunded'
-                            : 'badge-failed'
-                        }`}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${getStatusBadgeClass(payment.status)}`}
                       >
                         {payment.status}
                       </span>
@@ -286,8 +290,14 @@ export const Payments: React.FC = () => {
 
       {/* Enhanced Payment Details Modal */}
       {selectedPayment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-2xl bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative max-h-[90vh] overflow-y-auto">
+        <div 
+          onClick={() => setSelectedPayment(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl bg-[#121215] border border-zinc-700 rounded-2xl p-6 text-white relative my-auto max-h-[85vh] overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedPayment(null)}
               className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg z-10"

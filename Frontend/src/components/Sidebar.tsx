@@ -28,16 +28,6 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const { merchant, logout } = useAuth();
 
-  const navItems: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'checkout', label: 'Checkout Simulator', icon: CreditCard },
-    { id: 'payments', label: 'Payments', icon: ArrowLeftRight },
-    { id: 'refunds', label: 'Refunds', icon: RotateCcw },
-    { id: 'apikeys', label: 'API Keys', icon: KeyRound },
-    { id: 'operations', label: 'Operations & Webhooks', icon: Activity },
-    { id: 'vault', label: 'Saved Cards Vault', icon: ShieldCheck },
-  ];
-
   return (
     <aside className="w-64 bg-[#0c0c0e] border-r border-zinc-800/80 flex flex-col h-screen fixed left-0 top-0 z-30 select-none">
       {/* Brand Header */}
@@ -55,33 +45,70 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
       </div>
 
       {/* Navigation List */}
-      <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
-          Core Gateway
+      <nav className="flex-1 py-4 px-3 space-y-5 overflow-y-auto">
+        {/* Core Gateway Section */}
+        <div className="space-y-1">
+          <div className="px-3 pb-1 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+            Core Gateway
+          </div>
+          {[
+            { id: 'overview' as NavTab, label: 'Overview', icon: LayoutDashboard },
+            { id: 'checkout' as NavTab, label: 'Checkout Simulator', icon: CreditCard, badge: 'DEMO' },
+            { id: 'payments' as NavTab, label: 'Payments', icon: ArrowLeftRight },
+            { id: 'refunds' as NavTab, label: 'Refunds', icon: RotateCcw },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                  isActive
+                    ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/60'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : 'text-zinc-400'}`} />
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="ml-auto text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                isActive
-                  ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/60'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-              }`}
-            >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : 'text-zinc-400'}`} />
-              <span>{item.label}</span>
-              {item.id === 'checkout' && (
-                <span className="ml-auto text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-semibold">
-                  LIVE
-                </span>
-              )}
-            </button>
-          );
-        })}
+
+        {/* Developer & Tools Section */}
+        <div className="space-y-1">
+          <div className="px-3 pb-1 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+            Developer & Tools
+          </div>
+          {[
+            { id: 'apikeys' as NavTab, label: 'API Keys', icon: KeyRound },
+            { id: 'operations' as NavTab, label: 'Operations & Webhooks', icon: Activity },
+            { id: 'vault' as NavTab, label: 'Saved Cards Vault', icon: ShieldCheck },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                  isActive
+                    ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/60'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : 'text-zinc-400'}`} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </nav>
 
       {/* Merchant Footer Profile */}

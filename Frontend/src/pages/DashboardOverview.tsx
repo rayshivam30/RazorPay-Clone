@@ -7,14 +7,17 @@ import {
   ShieldCheck,
   CheckCircle2,
   RefreshCw,
+  CreditCard,
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { paymentsApi } from '../services/api';
 import type { Payment } from '../types';
+import type { NavTab } from '../components/Sidebar';
+import { getStatusBadgeClass } from '../utils/statusBadge';
 
 interface DashboardOverviewProps {
-  onOpenCheckout: (orderId: string, amount: number) => void;
-  onNavigateTab: (tab: any) => void;
+  onOpenCheckout?: (orderId: string, amount: number) => void;
+  onNavigateTab: (tab: NavTab) => void;
 }
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
@@ -92,13 +95,22 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={fetchData}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 border border-zinc-700 transition-colors"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onNavigateTab('checkout')}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition-colors"
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            <span>Launch Checkout</span>
+          </button>
+          <button
+            onClick={fetchData}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 border border-zinc-700 transition-colors"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -114,7 +126,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
             <TrendingUp className="w-3.5 h-3.5" />
-            <span>+14.2% from last week</span>
+            <span>Captured merchant volume</span>
           </div>
         </div>
 
@@ -232,13 +244,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                     <td className="py-3 px-4 text-emerald-400 font-bold">₹{p.amount.amountUnits.toLocaleString()}</td>
                     <td className="py-3 px-4 font-sans text-zinc-300">{p.method}</td>
                     <td className="py-3 px-4">
-                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold font-sans ${
-                        p.status === 'CAPTURED' ? 'badge-captured' :
-                        p.status === 'SETTLED' ? 'badge-settled' :
-                        p.status === 'FAILED' ? 'badge-failed' :
-                        p.status === 'REFUNDED' ? 'badge-refunded' :
-                        p.status === 'PARTIALLY_REFUNDED' ? 'badge-partially-refunded' : 'badge-created'
-                      }`}>
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold font-sans ${getStatusBadgeClass(p.status)}`}>
                         {p.status}
                       </span>
                     </td>

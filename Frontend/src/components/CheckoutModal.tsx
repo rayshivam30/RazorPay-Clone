@@ -96,6 +96,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     return () => clearInterval(interval);
   }, [step, currentPayment, onSuccess]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && step !== 'AUTHORIZING') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose, step]);
+
   if (!isOpen) return null;
 
   const handlePay = async () => {
@@ -168,8 +179,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col">
+    <div 
+      onClick={() => {
+        if (step !== 'AUTHORIZING') onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md bg-[#121215] border border-zinc-700/80 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col my-auto max-h-[85vh] overflow-y-auto"
+      >
         <div className="bg-[#0b1329] p-5 border-b border-zinc-800 flex items-center justify-between relative">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-xl shadow-md">

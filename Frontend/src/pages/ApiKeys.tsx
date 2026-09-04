@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { KeyRound, Plus, Copy, Check, Trash2, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { KeyRound, Plus, Copy, Check, Trash2, AlertTriangle, ShieldCheck, X } from 'lucide-react';
 import { apiKeyApi } from '../services/api';
 import type { ApiKey, ApiKeyCreateResponse } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/Toast';
 
 export const ApiKeys: React.FC = () => {
   const { setActiveApiKey, clearActiveApiKey, apiKeyId: activeKeyId } = useAuth();
+  const { showToast } = useToast();
   const [keys, setKeys] = useState<ApiKey[]>([]);
   const [newKeyData, setNewKeyData] = useState<ApiKeyCreateResponse | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showRevoked, setShowRevoked] = useState(false);
   const [newKeyEnv, setNewKeyEnv] = useState<'TEST' | 'LIVE'>('TEST');
+  const [keyToRevoke, setKeyToRevoke] = useState<{ id: string; keyIdString?: string } | null>(null);
 
   const fetchKeys = async () => {
     try {
@@ -25,6 +28,17 @@ export const ApiKeys: React.FC = () => {
     fetchKeys();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setNewKeyData(null);
+        setKeyToRevoke(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const visibleKeys = showRevoked ? keys : keys.filter((k) => k.enabled !== false);
 
   const handleGenerateKey = async () => {
@@ -32,22 +46,26 @@ export const ApiKeys: React.FC = () => {
       const res = await apiKeyApi.create({ environment: newKeyEnv });
       setNewKeyData(res);
       setActiveApiKey(res.keyId, res.keySecret);
+      showToast(`Generated new ${newKeyEnv} API key successfully!`, 'success');
       fetchKeys();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to generate API Key');
+      showToast(err.response?.data?.message || 'Failed to generate API Key', 'error');
     }
   };
 
-  const handleRevoke = async (id: string, keyIdString?: string) => {
-    if (!confirm('Are you sure you want to revoke this API key? Applications using it will lose access.')) return;
+  const confirmRevoke = async () => {
+    if (!keyToRevoke) return;
     try {
-      await apiKeyApi.revoke(id);
-      if (activeKeyId === keyIdString) {
+      await apiKeyApi.revoke(keyToRevoke.id);
+      if (activeKeyId === keyToRevoke.keyIdString) {
         clearActiveApiKey();
       }
+      showToast('API Key revoked successfully', 'info');
       fetchKeys();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to revoke API key');
+      showToast(err.response?.data?.message || 'Failed to revoke API key', 'error');
+    } finally {
+      setKeyToRevoke(null);
     }
   };
 
@@ -56,9 +74,10 @@ export const ApiKeys: React.FC = () => {
       const res = await apiKeyApi.rotate(keyId);
       setNewKeyData(res);
       setActiveApiKey(res.keyId, res.keySecret);
+      showToast('API Key rotated successfully!', 'success');
       fetchKeys();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to rotate API key');
+      showToast(err.response?.data?.message || 'Failed to rotate API key', 'error');
     }
   };
 
@@ -173,7 +192,7 @@ export const ApiKeys: React.FC = () => {
                               Rotate
                             </button>
                             <button
-                              onClick={() => handleRevoke(key.id, key.keyId)}
+                              onClick={() => setKeyToRevoke({ id: key.id, keyIdString: key.keyId })}
                               className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20"
                               title="Revoke Key"
                             >
@@ -193,9 +212,62 @@ export const ApiKeys: React.FC = () => {
         </div>
       </div>
 
+      {/* Revocation Confirmation Modal */}
+      {keyToRevoke && (
+        <div 
+          onClick={() => setKeyToRevoke(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm bg-[#121215] border border-red-500/30 rounded-2xl p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[85vh] overflow-y-auto"
+          >
+            <button
+              onClick={() => setKeyToRevoke(null)}
+              className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-white rounded-lg"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+
+            <div className="text-center space-y-1">
+              <h3 className="font-bold text-base text-white">Revoke API Key?</h3>
+              <p className="text-xs text-zinc-400">
+                Are you sure you want to revoke this API key? Applications using it will immediately lose access.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={() => setKeyToRevoke(null)}
+                className="flex-1 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-xs font-semibold text-zinc-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRevoke}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-semibold text-white shadow-lg shadow-red-600/30"
+              >
+                Revoke Key
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Key Generated Modal */}
       {newKeyData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-md bg-[#121215] border border-blue-500/40 rounded-2xl p-6 shadow-2xl text-white space-y-4">
+        <div 
+          onClick={() => setNewKeyData(null)}
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/85 backdrop-blur-sm animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-[#121215] border border-blue-500/40 rounded-2xl p-6 shadow-2xl text-white space-y-4 relative my-auto max-h-[85vh] overflow-y-auto"
+          >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
                 <KeyRound className="w-5 h-5" />

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider, useToast } from './components/Toast';
 import { AuthPage } from './pages/Auth';
+import { LandingPage } from './pages/LandingPage';
 import { Sidebar } from './components/Sidebar';
 import type { NavTab } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -14,23 +16,72 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { CreditCard, ArrowRight } from 'lucide-react';
 import { ordersApi } from './services/api';
 
-const DashboardContent: React.FC = () => {
+type AppView = 'landing' | 'auth' | 'dashboard';
+
+const MainAppContent: React.FC = () => {
   const { token, apiKeyId, apiKeySecret } = useAuth();
+  const { showToast } = useToast();
+  const [currentView, setCurrentView] = useState<AppView>('landing');
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
+
+  useEffect(() => {
+    if (!token) {
+      setCurrentView('landing');
+    }
+  }, [token]);
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutOrderId, setCheckoutOrderId] = useState('order_demo_101');
   const [checkoutAmount, setCheckoutAmount] = useState(1500);
-
-  if (!token) {
-    return <AuthPage />;
-  }
 
   const handleOpenCheckout = (orderId: string, amount: number) => {
     setCheckoutOrderId(orderId);
     setCheckoutAmount(amount);
     setIsCheckoutOpen(true);
   };
+
+  // If user clicks "Launch Checkout Demo" from Landing Page
+  const handleOpenDemoFromLanding = async () => {
+    if (!token || !apiKeyId || !apiKeySecret) {
+      // Demo order using demo fallback ID
+      handleOpenCheckout('order_demo_101', 1500);
+      return;
+    }
+    try {
+      const newOrder = await ordersApi.create({
+        amount: { amountUnits: 1500, currency: 'INR' },
+        receipt: `rcpt_landing_${Math.floor(Math.random() * 10000)}`,
+        notes: { demo: 'Landing Page Simulator' },
+      });
+      handleOpenCheckout(newOrder.id, newOrder.amount.amountUnits);
+    } catch {
+      handleOpenCheckout('order_demo_101', 1500);
+    }
+  };
+
+  // Unauthenticated Flow: Landing Page or Auth (Login/Signup) Page
+  if (!token) {
+    if (currentView === 'auth') {
+      return <AuthPage onBackToLanding={() => setCurrentView('landing')} />;
+    }
+
+    return (
+      <>
+        <LandingPage
+          isLoggedIn={false}
+          onGoToAuth={() => setCurrentView('auth')}
+          onGoToDashboard={() => setCurrentView('auth')}
+          onOpenCheckoutDemo={handleOpenDemoFromLanding}
+        />
+        <CheckoutModal
+          orderId={checkoutOrderId}
+          amountInRupees={checkoutAmount}
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+        />
+      </>
+    );
+  }
 
   const getTitle = () => {
     switch (activeTab) {
@@ -111,9 +162,15 @@ const DashboardContent: React.FC = () => {
                           handleOpenCheckout(newOrder.id, newOrder.amount.amountUnits);
                         } catch (err: any) {
                           if (err.message?.includes('API key required')) {
-                            alert('⚠️ API Key Required\n\nThe checkout simulator requires active API keys to function. Please:\n\n1. Go to API Keys section\n2. Create a new API key for TEST environment\n3. The key will be automatically activated\n4. Return here to test checkout\n\nCurrently using JWT authentication which is not sufficient for payment operations.');
+                            showToast(
+                              'API Key Required: Create a TEST API key in the API Keys section to use the simulator.',
+                              'warning'
+                            );
                           } else {
-                            alert(err.response?.data?.message || err.message || 'Failed to create order for checkout');
+                            showToast(
+                              err.response?.data?.message || err.message || 'Failed to create order for checkout',
+                              'error'
+                            );
                           }
                         }
                       }}
@@ -153,7 +210,9 @@ const DashboardContent: React.FC = () => {
 export function App() {
   return (
     <AuthProvider>
-      <DashboardContent />
+      <ToastProvider>
+        <MainAppContent />
+      </ToastProvider>
     </AuthProvider>
   );
 }
