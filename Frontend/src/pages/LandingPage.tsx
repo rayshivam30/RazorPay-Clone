@@ -17,7 +17,6 @@ import {
   Terminal,
   Globe,
   Sparkles,
-  Play,
   RotateCcw,
 } from 'lucide-react';
 
@@ -31,7 +30,6 @@ interface LandingPageProps {
 export const LandingPage: React.FC<LandingPageProps> = ({
   onGoToAuth,
   onGoToDashboard,
-  onOpenCheckoutDemo,
   isLoggedIn,
 }) => {
   const [activeCodeTab, setActiveCodeTab] = useState<'curl' | 'node' | 'java'>('curl');
