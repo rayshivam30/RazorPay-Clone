@@ -5,6 +5,7 @@ import type { Refund } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { getStatusBadgeClass } from '../utils/statusBadge';
 import { useToast } from '../components/Toast';
+import { ModalPortal } from '../components/ModalPortal';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -315,6 +316,7 @@ export const Refunds: React.FC = () => {
 
       {/* Refund Details Modal Drawer */}
       {selectedRefund && (
+        <ModalPortal>
         <div 
           onClick={() => setSelectedRefund(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -329,22 +331,27 @@ export const Refunds: React.FC = () => {
             >
               <X className="w-4 h-4" />
             </button>
-            <h3 className="font-bold text-lg text-white">Refund Audit Inspector</h3>
+            <div className="pr-8">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-400">Transaction details</p>
+              <h3 className="mt-1 font-bold text-lg text-white">Refund Audit Inspector</h3>
+            </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 font-mono text-xs space-y-2">
-              <div className="flex justify-between"><span className="text-zinc-500">Refund ID:</span><span>{selectedRefund.id}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Payment ID:</span><span>{selectedRefund.paymentId}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Amount:</span><span className="text-indigo-400 font-bold">₹{selectedRefund.amount?.amountUnits}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Status:</span><span className="text-emerald-400 font-bold">{selectedRefund.status || 'PROCESSED'}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Reason:</span><span className="font-sans text-zinc-300">{selectedRefund.reason || 'N/A'}</span></div>
-              <div className="flex justify-between"><span className="text-zinc-500">Processed At:</span><span className="font-sans text-zinc-300">{new Date(selectedRefund.createdAt || Date.now()).toLocaleString()}</span></div>
+            <div className="divide-y divide-zinc-800 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 text-xs">
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5 font-mono"><span className="text-zinc-500">Refund ID</span><span className="break-all text-right text-zinc-200">{selectedRefund.id}</span></div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5 font-mono"><span className="text-zinc-500">Payment ID</span><span className="break-all text-right text-zinc-200">{selectedRefund.paymentId}</span></div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5"><span className="text-zinc-500">Amount</span><span className="text-right font-mono font-bold text-indigo-400">₹{selectedRefund.amount?.amountUnits?.toLocaleString('en-IN')}</span></div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5"><span className="text-zinc-500">Status</span><span className="text-right font-bold text-emerald-400">{selectedRefund.status || 'PROCESSED'}</span></div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5"><span className="text-zinc-500">Reason</span><span className="break-words text-right text-zinc-300">{selectedRefund.reason || 'N/A'}</span></div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3.5"><span className="text-zinc-500">Processed at</span><span className="text-right text-zinc-300">{new Date(selectedRefund.createdAt || Date.now()).toLocaleString()}</span></div>
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* Issue Direct Refund Modal */}
       {isModalOpen && (
+        <ModalPortal>
         <div 
           onClick={() => setIsModalOpen(false)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -435,6 +442,7 @@ export const Refunds: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

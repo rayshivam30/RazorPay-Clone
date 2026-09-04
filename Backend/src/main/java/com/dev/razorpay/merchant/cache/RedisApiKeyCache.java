@@ -47,7 +47,13 @@ public class RedisApiKeyCache implements ApiKeyCache {
 
     @Override
     public void evict(String keyId) {
-        stringRedisTemplate.delete(PREFIX+keyId);
+        try {
+            stringRedisTemplate.delete(PREFIX + keyId);
+        } catch (Exception e) {
+            // Revocation is persisted in PostgreSQL. A cache outage must never
+            // roll back that security-critical database update.
+            log.warn("ApiKey cache eviction failed, keyId: {}", keyId);
+        }
     }
 }
 

@@ -3,6 +3,7 @@ import { Activity, Play, RefreshCw, Layers, CheckCircle2, Eye, X, ChevronLeft, C
 import { operationsApi } from '../services/api';
 import type { WebhookEvent, Settlement } from '../types';
 import { useToast } from '../components/Toast';
+import { ModalPortal } from '../components/ModalPortal';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -370,6 +371,7 @@ export const Operations: React.FC = () => {
 
       {/* Settlement Details Modal */}
       {selectedSettlement && (
+        <ModalPortal>
         <div 
           onClick={() => setSelectedSettlement(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -454,10 +456,12 @@ export const Operations: React.FC = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* Webhook Details Modal */}
       {selectedWebhook && (
+        <ModalPortal>
         <div 
           onClick={() => setSelectedWebhook(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -491,6 +495,7 @@ export const Operations: React.FC = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

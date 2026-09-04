@@ -16,9 +16,12 @@ import type {
   LoginResponse,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-  ? `${import.meta.env.VITE_API_BASE_URL}/v1`
-  : 'http://localhost:8080/v1';
+const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+// VITE_API_BASE_URL may be supplied either as the service root or with `/v1`.
+// Normalising it prevents production requests such as `/v1/v1/payments`.
+const API_BASE_URL = configuredApiUrl
+  ? `${configuredApiUrl.replace(/\/+$/, '').replace(/\/v1$/, '')}/v1`
+  : '/v1';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -98,7 +101,7 @@ api.interceptors.response.use(
         error.userFriendlyMessage = data.message;
       }
     } else if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
-      error.userFriendlyMessage = 'Unable to connect to Razorpay Backend API (http://localhost:8080). Please ensure Spring Boot backend is running.';
+      error.userFriendlyMessage = `Unable to connect to the payment API (${API_BASE_URL}). Check the production API URL and CORS configuration.`;
     }
     return Promise.reject(error);
   }
@@ -107,7 +110,7 @@ api.interceptors.response.use(
 export const getApiErrorMessage = (err: any): string => {
   if (err?.userFriendlyMessage) return err.userFriendlyMessage;
   if (err?.code === 'ERR_NETWORK' || err?.message?.includes('Network Error')) {
-    return 'Unable to connect to Razorpay Backend API (http://localhost:8080). Please ensure Spring Boot backend is running.';
+    return `Unable to connect to the payment API (${API_BASE_URL}). Check the production API URL and CORS configuration.`;
   }
   if (err?.response?.data?.fieldErrors?.length) {
     return err.response.data.fieldErrors.map((f: any) => `${f.field}: ${f.message}`).join(' | ');

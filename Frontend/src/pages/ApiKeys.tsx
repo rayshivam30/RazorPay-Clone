@@ -4,6 +4,7 @@ import { apiKeyApi } from '../services/api';
 import type { ApiKey, ApiKeyCreateResponse } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
+import { ModalPortal } from '../components/ModalPortal';
 
 export const ApiKeys: React.FC = () => {
   const { setActiveApiKey, clearActiveApiKey, apiKeyId: activeKeyId } = useAuth();
@@ -151,10 +152,10 @@ export const ApiKeys: React.FC = () => {
                   const isActive = activeKeyId === key.keyId;
                   return (
                     <tr key={key.id} className="hover:bg-zinc-900/40 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-white">
+                      <td className="py-3.5 px-4 font-semibold text-white min-w-64">
                         <div className="flex items-center gap-2">
-                          <KeyRound className="w-4 h-4 text-zinc-500" />
-                          <span>{key.keyId}</span>
+                          <KeyRound className="w-4 h-4 text-zinc-500 shrink-0" />
+                          <span className="break-all">{key.keyId}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-4 font-sans">
@@ -214,6 +215,7 @@ export const ApiKeys: React.FC = () => {
 
       {/* Revocation Confirmation Modal */}
       {keyToRevoke && (
+        <ModalPortal>
         <div 
           onClick={() => setKeyToRevoke(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -256,10 +258,12 @@ export const ApiKeys: React.FC = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* New Key Generated Modal */}
       {newKeyData && (
+        <ModalPortal>
         <div 
           onClick={() => setNewKeyData(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/85 backdrop-blur-sm animate-fadeIn"
@@ -283,11 +287,11 @@ export const ApiKeys: React.FC = () => {
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3 font-mono text-xs">
               <div>
                 <span className="text-zinc-500 text-[10px] uppercase block mb-1">Key ID</span>
-                <div className="flex items-center justify-between bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 text-white">
-                  <span>{newKeyData.keyId}</span>
+                <div className="flex items-center gap-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 text-white">
+                  <span className="min-w-0 flex-1 break-all leading-5">{newKeyData.keyId}</span>
                   <button
                     onClick={() => copyToClipboard(newKeyData.keyId, 'keyId')}
-                    className="text-zinc-400 hover:text-white"
+                    className="shrink-0 text-zinc-400 hover:text-white"
                   >
                     {copiedField === 'keyId' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                   </button>
@@ -296,11 +300,11 @@ export const ApiKeys: React.FC = () => {
 
               <div>
                 <span className="text-zinc-500 text-[10px] uppercase block mb-1">Key Secret</span>
-                <div className="flex items-center justify-between bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 text-emerald-400 font-bold">
-                  <span>{newKeyData.keySecret}</span>
+                <div className="flex items-center gap-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 text-emerald-400 font-bold">
+                  <span className="min-w-0 flex-1 break-all leading-5">{newKeyData.keySecret}</span>
                   <button
                     onClick={() => copyToClipboard(newKeyData.keySecret, 'keySecret')}
-                    className="text-zinc-400 hover:text-white"
+                    className="shrink-0 text-zinc-400 hover:text-white"
                   >
                     {copiedField === 'keySecret' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                   </button>
@@ -316,6 +320,7 @@ export const ApiKeys: React.FC = () => {
             </button>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

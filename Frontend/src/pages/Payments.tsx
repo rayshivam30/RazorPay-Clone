@@ -6,6 +6,7 @@ import { RefundModal } from '../components/RefundModal';
 import { useAuth } from '../context/AuthContext';
 import { getStatusBadgeClass } from '../utils/statusBadge';
 import { useToast } from '../components/Toast';
+import { ModalPortal } from '../components/ModalPortal';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -290,6 +291,7 @@ export const Payments: React.FC = () => {
 
       {/* Enhanced Payment Details Modal */}
       {selectedPayment && (
+        <ModalPortal>
         <div 
           onClick={() => setSelectedPayment(null)}
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn"
@@ -305,8 +307,11 @@ export const Payments: React.FC = () => {
               <X className="w-4 h-4" />
             </button>
             
-            <h3 className="font-bold text-lg text-white mb-1">Payment Lifecycle Details</h3>
-            <p className="text-xs text-blue-400 font-mono mb-6">{selectedPayment.id}</p>
+            <div className="pr-8 mb-6">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-400">Transaction details</p>
+              <h3 className="mt-1 font-bold text-lg text-white">Payment Lifecycle Details</h3>
+              <p className="mt-2 break-all text-xs text-zinc-400 font-mono">{selectedPayment.id}</p>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Payment Overview */}
@@ -325,7 +330,7 @@ export const Payments: React.FC = () => {
                     
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Order ID:</span>
-                      <span className="font-mono text-zinc-300">{selectedPayment.orderId}</span>
+                      <span className="max-w-[60%] break-all text-right font-mono text-zinc-300">{selectedPayment.orderId}</span>
                     </div>
                     
                     <div className="flex justify-between">
@@ -347,7 +352,7 @@ export const Payments: React.FC = () => {
                     
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Bank Reference:</span>
-                      <span className="font-mono text-zinc-300 text-[10px]">{selectedPayment.bankReference || 'N/A'}</span>
+                      <span className="max-w-[60%] break-all text-right font-mono text-zinc-300 text-[10px]">{selectedPayment.bankReference || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -500,6 +505,7 @@ export const Payments: React.FC = () => {
             )}
           </div>
         </div>
+        </ModalPortal>
       )}
 
       <RefundModal
